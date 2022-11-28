@@ -391,8 +391,32 @@ class Render(object):
                 if(x >= 0 and y >=0 and x < len(self.zBuffer) and y < len(self.zBuffer[0]) and z > self.zBuffer[x][y]):
                     self.zBuffer[x][y] = z
                     self.glPoint(x, y, color)
-                    
 
+    def polygonPoint(self, x, y, polygon):
+
+        pointInside = False
+        len_polygon = len(polygon)
+        x0, y0 = polygon[0]
+
+        for i in range(len_polygon + 1):
+            x1, y1 = polygon[i % len_polygon]
+
+            if y > min(y0, y1):
+                if y <= max(y0, y1):
+                    if x <= max(x0, x1):
+                        if y0 is not y1:
+                            inside_x = (y - y0) * (x1 - x0) / (y1 - y0) + x0
+                            if x0 == x1 or x <= inside_x:
+                                pointInside = not pointInside
+            x0, y0 = x1, y1
+        
+        return pointInside
+
+    def fillPolygon(self, polygon):
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.polygonPoint(x, y, polygon):
+                    self.glPoint(x, y, self.render_color)
 
     def glFinish(self, filename):
         f = open(filename, 'bw')
