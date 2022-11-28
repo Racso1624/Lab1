@@ -1,7 +1,7 @@
 #Oscar Fernando López Barrios
 #Carné 20679
 #Gráficas Por Computadora
-#SR6
+#Lab1
 
 import struct
 from obj import *
